@@ -31,6 +31,7 @@ import sys
 import argparse
 from pathlib import Path
 # imports malucos aqui
+from lexer.lexer import Lexer
 
 
 def read_file(input_file):
