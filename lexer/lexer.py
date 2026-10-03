@@ -19,7 +19,9 @@ def lexer(code: str) -> list[Token]:
 
         match indicator_area:
             case ' ':
-                pass
+                pass # ignora linha em branco
+            case '':
+                pass # ignora linha em branco
             case '*':
                 continue # ignora linha de comentário
             case '/':
@@ -31,14 +33,14 @@ def lexer(code: str) -> list[Token]:
                 # [TODO] implementar a lógica de debug -g
                 pass
             case _:
-                raise IndicatorAreaError(f"Indicador de indicador inválido: {indicator_area}")
+                raise IndicatorAreaError(f"Linha [{line}]: Indicador de indicador inválido: {indicator_area}")
 
         if a_area == '':
             continue # linha em branco
         try:
             tokenize(a_area, tokens)
         except TokenizationError as e:
-            raise AAreaError(f"Erro na área A: {e}")
+            raise AAreaError(f"Linha [{line}]: Erro na área A: {e}")
 
         if b_area == '':
             continue # linha em branco
@@ -46,8 +48,9 @@ def lexer(code: str) -> list[Token]:
         try:
             tokenize(b_area, tokens)
         except TokenizationError as e:
-            raise BAreaError(f"Erro na área B: {e}")
+            raise BAreaError(f"Linha [{line}]: Erro na área B: {e}")
 
+        # print(tokens)
     return tokens
 
 
@@ -83,16 +86,16 @@ def get_biggest_token(code) -> Token:
             match = re.fullmatch(regex, snippet, re.IGNORECASE)
 
             if match:
-                biggest_token = Token(token_type, match.group(0))
+                biggest_token = Token(token_type, match.group(0).upper())
                 break
 
-        if match is None:
-            if biggest_token is not None:
-                return biggest_token
+        # if match is None:
+        #     if biggest_token is not None:
+        #         return biggest_token
 
-            raise TokenizationError(
-                f"Tokenization error at: {snippet}"
-            )
+        #     raise TokenizationError(
+        #         f"Tokenization error at: {snippet}"
+        #     )
 
     if biggest_token is not None:
         return biggest_token

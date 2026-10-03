@@ -66,7 +66,7 @@ def start_lex(code : str):
   tokens = lexer(code)
 
   print("Resultado da análise léxica:")
-  print(tokens)
+  return tokens
 
 
 def print_results(output_file):
@@ -120,7 +120,7 @@ def main():
     tokens = start_lex(code)
   except Exception as e:
     print(f"Exceção durante a análise léxica: {e}")
-  print_results(output_file)
+  print_results(str(tokens))
 
 
 if __name__ == "__main__":
