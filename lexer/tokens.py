@@ -7,15 +7,19 @@ class TokenType(Enum):
     # Essa numeração permite uma regra de hierarquia de tokens? Será?
     # -g
 
-    KEYWORD = 1, 
-    # IDENTIFIER = 2,
-    # NUMBER = 3,
-    # BAD_TOKEN = 100 #Deveria ser o token de erro com menor prioridade
-
+    RESERVED_KEYWORD = 1,
+    NUMERIC_LITERAL = 2,
+    ALFANUMERIC_LITERAL = 3,
+    IDENTIFIER = 4,
+    SPECIAL_CHARACTER = 5
 
 # Define quais as expressões regulares que cada token reconhece
 TokenRegex = {
-    TokenType.KEYWORD: r'\b(?:IF|ELSE|END|PROGRAM|DATA|DIVISION|PROCEDURE|SECTION)\b',
+    TokenType.RESERVED_KEYWORD: r'\b(?:IDENTIFICATION|ENVIRONMENT|DATA|PROCEDURE|DIVISION|SECTION|DISPLAY|ACCEPT|PERFORM|STOP|RUN|IF|ELSE|MOVE)\b',
+    TokenType.NUMERIC_LITERAL: r'[+-]?\d+\.\d+',
+    TokenType.ALFANUMERIC_LITERAL: r"""(['"]).*\1""",
+    TokenType.IDENTIFIER: r'[A-Z0-9](?:[A-Z0-9-]{0,28}[A-Z0-9])?',
+    TokenType.SPECIAL_CHARACTER: r'[.,;()]'
 }
 
 class Token:
@@ -24,5 +28,3 @@ class Token:
         self.type = type
         self.value = value
 
-class TokenizationError(Exception):
-    pass

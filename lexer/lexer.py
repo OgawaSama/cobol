@@ -1,47 +1,102 @@
-from tokens import TokenType, Token, TokenRegex, TokenizationError
+
+from .tokens import TokenType, Token, TokenRegex
+from .errors import SequenceNumberAreaError, IndicatorAreaError, AAreaError, BAreaError, TokenizationError
 import re
 
-class Lexer:
-    #classe 
-    def __init__(self, code: str):
 
-        self.code = code
-        self.tokens = []
 
-        self.finished_code = False
+def lexer(code: str) -> list[Token]:
+    #Função principal do analisador léxico (antes era uma classe, mas não parecia necessário guardar estados e transformei em função) -g
 
-    def tokenize(self):
-        # tenta tokenizar o codigo -g
+    tokens = []
 
-        while(len(self.code) > 0):
-            token = self.get_biggest_token()
-            if token is None:
-                #TODO processamento caso erro -g
+    for line in code.splitlines():
+        sequence_number_area = line[:6] # Ignorei mesmo #toleve #vivendonoperigo #cubol -g
+        indicator_area = line[6:7] # [TODO] De fato checar se há uma continuação de literal ou outras coisas
+        
+        a_area = line[7:11]
+        b_area = line[11:72]
+
+        match indicator_area:
+            case ' ':
+                pass
+            case '*':
+                continue # ignora linha de comentário
+            case '/':
+                continue # ignora linha de comentário
+            case '-':
+                # [TODO] implementar a lógica de continuação de literal -g
+                pass
+            case 'D':
+                # [TODO] implementar a lógica de debug -g
+                pass
+            case _:
+                raise IndicatorAreaError(f"Indicador de indicador inválido: {indicator_area}")
+
+        if a_area == '':
+            continue # linha em branco
+        try:
+            tokenize(a_area, tokens)
+        except TokenizationError as e:
+            raise AAreaError(f"Erro na área A: {e}")
+
+        if b_area == '':
+            continue # linha em branco
+
+        try:
+            tokenize(b_area, tokens)
+        except TokenizationError as e:
+            raise BAreaError(f"Erro na área B: {e}")
+
+    return tokens
+
+
+def tokenize(code: str, tokens: list[Token]) -> None:
+
+    while len(code) > 0:
+
+        if code[0].isspace():
+            code = code[1:]
+            continue
+
+        token = get_biggest_token(code)
+
+        tokens.append(token)
+        code = code[len(token.value):]
+
+
+def get_biggest_token(code) -> Token:
+
+    biggest_token = None
+    
+    snippet = ""
+
+
+    while len(snippet) < len(code):
+
+        snippet = code[:len(snippet) + 1]
+
+        match = None
+
+        for token_type, regex in TokenRegex.items():
+
+            match = re.fullmatch(regex, snippet, re.IGNORECASE)
+
+            if match:
+                biggest_token = Token(token_type, match.group(0))
                 break
-            self.tokens.append(token)
-            self.code = self.code[len(token.value):] #retira o token do código, deve ter um jeito melhor de fazer isso -g
 
-    def get_biggest_token(self):
-
-        biggest_token = None
-
-        # [TODO] implementar a lógica de hierarquia de tokens caso haja mais de um token possivel, acho que já é assim mas gostaria de confirmar -g
-
-        snippet = ""
-        while(len(self.code) > 0):
-
-            snippet = self.code[:len(snippet) + 1]
-
-            match = None
-            for token_type, regex in TokenRegex.items():
-
-                match = re.match(regex, snippet)
-
-                if match:
-                    biggest_token = Token(token_type, match.group(0))
-                    break 
-
-            if match is None and biggest_token is not None:
+        if match is None:
+            if biggest_token is not None:
                 return biggest_token
-            else:
-                raise TokenizationError(f"Tokenization error at: {snippet}")
+
+            raise TokenizationError(
+                f"Tokenization error at: {snippet}"
+            )
+
+    if biggest_token is not None:
+        return biggest_token
+
+    raise TokenizationError(
+        f"Tokenization error at: {code}"
+    )

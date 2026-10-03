@@ -31,8 +31,7 @@ import sys
 import argparse
 from pathlib import Path
 # imports malucos aqui
-from lexer.lexer import Lexer
-
+from lexer.lexer import lexer
 
 def read_file(input_file):
   # Lê o arquivo de cobol e salva oq for necessário em alguma variável.
@@ -43,6 +42,8 @@ def read_file(input_file):
   #  analisa
   # Opinem.
 
+  #check vamo faze isso ai msm -g 
+
   file = open(input_file, 'r')
   content = file.read()
 
@@ -50,15 +51,22 @@ def read_file(input_file):
   print(content)
 
   file.close()
+  return content
 
 
-def start_lex():
+def start_lex(code : str):
   # Inicializa o analisador lexico, chama as funções necessárias para sua
   #  execução
 
   # Aqui a gente expande conforme necessário. 
   # Sub-funções ficam abaixo desta função.
-  print("Sesbian")
+
+  print("Iniciando análise léxica...")
+
+  tokens = lexer(code)
+
+  print("Resultado da análise léxica:")
+  print(tokens)
 
 
 def print_results(output_file):
@@ -107,11 +115,11 @@ def main():
 
 #-- main de verdade --
   print("ANALISADOR MUITO MODERNO VERSÃO 39")
-  read_file(input_file)
+  code = read_file(input_file)
   try:
-    start_lex()
-  except:
-    print("Deu exceção e deu ruim")
+    tokens = start_lex(code)
+  except Exception as e:
+    print(f"Exceção durante a análise léxica: {e}")
   print_results(output_file)
 
 
