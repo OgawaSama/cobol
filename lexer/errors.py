@@ -14,3 +14,5 @@ class AAreaError(TokenizationError):
 class BAreaError(TokenizationError):
     pass
 
+class UnsupportedKeyword(TokenizationError):
+    pass
