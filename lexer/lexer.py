@@ -1,6 +1,6 @@
 
 from .tokens import TokenType, Token, TokenRegex
-from .errors import SequenceNumberAreaError, IndicatorAreaError, AAreaError, BAreaError, TokenizationError
+from .errors import SequenceNumberAreaError, IndicatorAreaError, AAreaError, BAreaError, TokenizationError, UnsupportedKeyword
 import re
 
 
