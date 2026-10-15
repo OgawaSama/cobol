@@ -28,6 +28,19 @@ def lexer(code: str) -> list[Token]:
                 continue # ignora linha de comentário
             case '-':
                 # [TODO] implementar a lógica de continuação de literal -g
+                # eu acho que tem 2 caminhos:
+                    # faz lookahead de 1 linha e ja agrupa se for o '-' 
+                        # -> deixa mais fodido pra todo caso exceto esse 
+                    # de alguma forma concatena com o token passado 
+                        # -> n sei quao viavel eh isso ngl
+                        # segundo IBM, pra linha usar '-' na seguinte, nao pode
+                        #   fechar as aspas iniciadas.
+                        #   linha seguinte tem aspas iniciadas
+                        #   ultima linha com '-' finaliza as aspas
+                        # eg:
+                        #   "aaaaaa
+                        # -"bbbbbb
+                        # -"ccccc"
                 pass
             case 'D':
                 # [TODO] implementar a lógica de debug -g
