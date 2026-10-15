@@ -10,6 +10,9 @@ def lexer(code: str) -> list[Token]:
 
     tokens = []
 
+    buffer = "" # buffer do literal incompleto 
+    incomplete_literal = False
+
     for line in code.splitlines():
         sequence_number_area = line[:6] # Ignorei mesmo #toleve #vivendonoperigo #cubol -g
         indicator_area = line[6:7] # [TODO] De fato checar se há uma continuação de literal ou outras coisas
@@ -27,21 +30,10 @@ def lexer(code: str) -> list[Token]:
             case '/':
                 continue # ignora linha de comentário
             case '-':
-                # [TODO] implementar a lógica de continuação de literal -g
-                # eu acho que tem 2 caminhos:
-                    # faz lookahead de 1 linha e ja agrupa se for o '-' 
-                        # -> deixa mais fodido pra todo caso exceto esse 
-                    # de alguma forma concatena com o token passado 
-                        # -> n sei quao viavel eh isso ngl
-                        # segundo IBM, pra linha usar '-' na seguinte, nao pode
-                        #   fechar as aspas iniciadas.
-                        #   linha seguinte tem aspas iniciadas
-                        #   ultima linha com '-' finaliza as aspas
-                        # eg:
-                        #   "aaaaaa
-                        # -"bbbbbb
-                        # -"ccccc"
-                pass
+                if (incomplete_literal == True):    # se a linha anterior marcou como incompleto, continuar. cc, erro.
+                    pass
+                else:
+                    raise IndicatorAreaError(f"Linha [{line}]: Indicador de continuacao de literal invalido.")
             case 'D':
                 # [TODO] implementar a lógica de debug -g
                 pass
@@ -57,8 +49,21 @@ def lexer(code: str) -> list[Token]:
 
         if b_area == '':
             continue # linha em branco
-
         try:
+            if (incomplete_literal == True): 
+                b_area = buffer + b_area[1:]
+                buffer = ""
+                incomplete_literal = False
+            # pro caso do literal que continua na prox linha -o
+            incomplete_literal_pattern = re.compile("""^["'][^"']*$""") #inicia com aspas e nao fecha elas
+            if (incomplete_literal_pattern.match(b_area)):
+                incomplete_literal = True
+                buffer = buffer + b_area
+                continue
+            numeric_pattern = re.compile("""["']\d+["']""")
+            if (numeric_pattern.match(b_area)):  #quando for numerico mas que durou varias linhas, eh lido como alfanumerico. transformar de volta para numerico. -o
+                b_area = b_area[1:-1]
+
             tokenize(b_area, tokens)
         except TokenizationError as e:
             raise BAreaError(f"Linha [{line}]: Erro na área B: {e}")
