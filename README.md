@@ -18,7 +18,7 @@ cobol/
 ├── input.cbl    # Arquivo default de entrada em COBOL
 ├── output.txt   # Saída gerada pelo programa
 ├── lexer/       # Implementação do analisador léxico
-│
+├── exemplos/    # Inputs de COBOL de exemplo (outro repo)
 └── tests/       # Testes automatizados (por enquanto apenas testes unitários lmfao)
 ```
 
