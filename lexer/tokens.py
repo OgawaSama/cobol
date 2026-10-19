@@ -6,11 +6,11 @@ class TokenType(Enum):
     # Essa numeração permite uma regra de hierarquia de tokens? Será?
     # -g
 
-    RESERVED_KEYWORD = 1,
+    RESERVED_KEYWORD = 1
     UNSUPPORTED_KEYWORD = 2
-    NUMERIC_LITERAL = 3,
-    ALFANUMERIC_LITERAL = 4,
-    IDENTIFIER = 5,
+    NUMERIC_LITERAL = 3
+    ALFANUMERIC_LITERAL = 4
+    IDENTIFIER = 5
     SPECIAL_CHARACTER = 6
 
 class Token:
@@ -36,8 +36,8 @@ file.close()
 TokenRegex = {
     TokenType.RESERVED_KEYWORD: r'\b(?:IDENTIFICATION|ENVIRONMENT|DATA|PROCEDURE|DIVISION|SECTION|DISPLAY|ACCEPT|PERFORM|STOP|RUN|IF|ELSE|MOVE)\b',
     TokenType.UNSUPPORTED_KEYWORD: f'{list}',
-    TokenType.NUMERIC_LITERAL: r'[+-]?\d+\.?\d+',
-    TokenType.ALFANUMERIC_LITERAL: r"""["'](.*?)["']""",
+    TokenType.NUMERIC_LITERAL: r'[+-]?\d+(?:\.\d+)?',
+    TokenType.ALFANUMERIC_LITERAL: r"""(["']).*\1""",
     TokenType.IDENTIFIER: r'[A-Z0-9](?:[A-Z0-9-]{0,28}[A-Z0-9])?',
     TokenType.SPECIAL_CHARACTER: r'[.,;()]'
 }
