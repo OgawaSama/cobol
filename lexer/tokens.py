@@ -20,22 +20,30 @@ class Token:
         self.value = value
 
     def __repr__(self):
-        return f"Token(type={self.type}, value='{self.value}')"
+        return f"Token(type={self.type}, value='{self.value}')\n"
 
 
 # evil reserved keyword bit level hacking
 # wtf?
-file = open(os.path.expanduser("./lexer/unsupported_keywords.list"), 'r')
-list = "\\b(?:"
-for line in file:
-    list = (list + line)[:-1] + "|"
-list = list[:-1] + ")\\b"
-file.close()
+# pelo amor de deus: deixar elegante depois
+unsupported_keywords_file = open(os.path.expanduser("./lexer/unsupported_keywords.list"), 'r')
+unsupported_keywords_list = "\\b(?:"
+for line in unsupported_keywords_file:
+    unsupported_keywords_list = (unsupported_keywords_list + line)[:-1] + "|"
+unsupported_keywords_list = unsupported_keywords_list[:-1] + ")\\b"
+unsupported_keywords_file.close()
+
+reserved_keywords_file = open(os.path.expanduser("./lexer/reserved_keywords.list"), 'r')
+reserved_keywords_list = "\\b(?:"
+for line in reserved_keywords_file:
+    reserved_keywords_list = (reserved_keywords_list + line)[:-1] + "|"
+reserved_keywords_list = reserved_keywords_list[:-1] + ")\\b"
+reserved_keywords_file.close()
 
 # Define quais as expressões regulares que cada token reconhece
 TokenRegex = {
-    TokenType.RESERVED_KEYWORD: r'\b(?:IDENTIFICATION|ENVIRONMENT|DATA|PROCEDURE|DIVISION|SECTION|DISPLAY|ACCEPT|PERFORM|STOP|RUN|IF|ELSE|MOVE)\b',
-    TokenType.UNSUPPORTED_KEYWORD: f'{list}',
+    TokenType.RESERVED_KEYWORD: f'{reserved_keywords_list}',
+    TokenType.UNSUPPORTED_KEYWORD: f'{unsupported_keywords_list}',
     TokenType.NUMERIC_LITERAL: r'[+-]?\d+(?:\.\d+)?',
     TokenType.ALFANUMERIC_LITERAL: r"""(["']).*\1""",
     TokenType.IDENTIFIER: r'[A-Z0-9](?:[A-Z0-9-]{0,28}[A-Z0-9])?',

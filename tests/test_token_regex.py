@@ -13,8 +13,8 @@ class LexerRegexTestCase(unittest.TestCase):
 
     def test_reserved_keyword(self):
         valid = ["IDENTIFICATION", "DISPLAY", "PROCEDURE", "DIVISION",
-                  "MOVE", "display", "dIsPlay"]
-        invalid = ["ogawa_sama", "xIDENTIFICATION", "PROGRAM", "_IF",
+                  "MOVE", "PROGRAM", "display", "dIsPlay"]
+        invalid = ["ogawa_sama", "xIDENTIFICATION", "_IF",
                    "1234"]
         for val in valid:
             with self.subTest(): # faz com que não pare na primeira falha
