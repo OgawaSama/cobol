@@ -47,5 +47,5 @@ TokenRegex = {
     TokenType.NUMERIC_LITERAL: r'[+-]?\d+(?:\.\d+)?',
     TokenType.ALFANUMERIC_LITERAL: r"""(["']).*\1""",
     TokenType.IDENTIFIER: r'[A-Z0-9](?:[A-Z0-9_-]{0,28}[A-Z0-9])?',
-    TokenType.SPECIAL_CHARACTER: r'[.,;()]'
+    TokenType.SPECIAL_CHARACTER: r'[.,;()=]'
 }

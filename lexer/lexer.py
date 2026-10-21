@@ -1,6 +1,6 @@
 
 from .tokens import TokenType, Token, TokenRegex
-from .errors import SequenceNumberAreaError, IndicatorAreaError, AAreaError, BAreaError, TokenizationError, UnsupportedKeyword
+from .errors import SequenceNumberAreaError, IndicatorAreaError, AAreaError, BAreaError, TokenizationError, UnsupportedKeyword, ProgramAreaError
 import re
 
 
@@ -40,35 +40,31 @@ def lexer(code: str) -> list[Token]:
             case _:
                 raise IndicatorAreaError(f"Linha [{line}]: Indicador de indicador inválido: {indicator_area}")
 
-        if a_area == '':
-            continue # linha em branco
-        try:
-            tokenize(a_area, tokens)
-        except TokenizationError as e:
-            raise AAreaError(f"Linha [{line}]: Erro na área A: {e}")
+        program_area = line[7:72]
+        if program_area == '':
+            continue
 
-        if b_area == '':
-            continue # linha em branco
         try:
-            if (incomplete_literal == True): 
-                b_area = buffer + b_area[1:]
+            if incomplete_literal:
+                program_area = buffer + program_area[1:]
                 buffer = ""
                 incomplete_literal = False
             # pro caso do literal que continua na prox linha -o
             incomplete_literal_pattern = re.compile("""^["'][^"']*$""") #inicia com aspas e nao fecha elas
-            if (incomplete_literal_pattern.match(b_area)):
+            if (incomplete_literal_pattern.match(program_area)):
                 incomplete_literal = True
-                buffer = buffer + b_area
+                buffer = buffer + program_area
                 continue
+            
             numeric_pattern = re.compile("""["']\d+["']""")
-            if (numeric_pattern.match(b_area)):  #quando for numerico mas que durou varias linhas, eh lido como alfanumerico. transformar de volta para numerico. -o
-                b_area = b_area[1:-1]
-
-            tokenize(b_area, tokens)
+            if (numeric_pattern.match(program_area)):  #quando for numerico mas que durou varias linhas, eh lido como alfanumerico. transformar de volta para numerico. -o
+              program_area = program_area[1:-1]
+            
+            tokenize(program_area, tokens)
+            
         except TokenizationError as e:
-            raise BAreaError(f"Linha [{line}]: Erro na área B: {e}")
-
-        # print(tokens)
+            raise ProgramAreaError(f"Linha [{line}]: Erro na área de programa: {e}")
+            
     return tokens
 
 
