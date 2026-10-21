@@ -49,7 +49,7 @@ class LexerRegexTestCase(unittest.TestCase):
 
     def test_identifier(self):
         valid = ["ogawa-sama", "A", "x12345", "COBOL-DA-SILVA",
-                 "6767sixseven"]
+                 "6767sixseven", "PROG008_STRING"]
         invalid = ["-INPUT", "INPUT-", "desgr@ca", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]
 
         for val in valid:
