@@ -20,9 +20,6 @@ def lexer(code: str) -> list[Token]:
         sequence_number_area = line[:6] # Ignorei mesmo #toleve #vivendonoperigo #cubol -g
         indicator_area = line[6:7] # [TODO] De fato checar se há uma continuação de literal ou outras coisas
         
-        a_area = line[7:11]
-        b_area = line[11:72]
-
         match indicator_area:
             case ' ':
                 pass # ignora linha em branco
