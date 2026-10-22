@@ -12,6 +12,7 @@ class TokenType(Enum):
     ALFANUMERIC_LITERAL = 4
     IDENTIFIER = 5
     SPECIAL_CHARACTER = 6
+    LOGICAL_OPERATOR = 7
 
 class Token:
     def __init__(self, type: TokenType, value: str):
@@ -47,5 +48,6 @@ TokenRegex = {
     TokenType.NUMERIC_LITERAL: r'[+-]?\d+(?:\.\d+)?',
     TokenType.ALFANUMERIC_LITERAL: r"""(["']).*\1""",
     TokenType.IDENTIFIER: r'[A-Z0-9](?:[A-Z0-9_-]{0,28}[A-Z0-9])?',
-    TokenType.SPECIAL_CHARACTER: r'[.,;()=]'
+    TokenType.SPECIAL_CHARACTER: r'[.,;()]',
+    TokenType.LOGICAL_OPERATOR: r'[+\-=\*\/><]', # [TODO] incluir aqui operacoes tipo >= e ** dps
 }

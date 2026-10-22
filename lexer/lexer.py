@@ -13,7 +13,10 @@ def lexer(code: str) -> list[Token]:
     buffer = "" # buffer do literal incompleto 
     incomplete_literal = False
 
+    line_count = 0
+
     for line in code.splitlines():
+        line_count = line_count + 1
         sequence_number_area = line[:6] # Ignorei mesmo #toleve #vivendonoperigo #cubol -g
         indicator_area = line[6:7] # [TODO] De fato checar se há uma continuação de literal ou outras coisas
         
@@ -32,13 +35,13 @@ def lexer(code: str) -> list[Token]:
             case '-':
                 if (incomplete_literal == True):    # se a linha anterior marcou como incompleto, continuar. cc, erro.
                     pass
-                else:
-                    raise IndicatorAreaError(f"Linha [{line}]: Indicador de continuacao de literal invalido.")
+                #else:
+                #   raise IndicatorAreaError(f"Linha {line_count} \"[{line}]\": Indicador de continuacao de literal invalido.")
             case 'D':
                 # [TODO] implementar a lógica de debug -g
                 pass
             case _:
-                raise IndicatorAreaError(f"Linha [{line}]: Indicador de indicador inválido: {indicator_area}")
+                raise IndicatorAreaError(f"Linha {line_count} \"[{line}]\": Indicador de indicador inválido: {indicator_area}")
 
         program_area = line[7:72]
         if program_area == '':
@@ -63,7 +66,7 @@ def lexer(code: str) -> list[Token]:
             tokenize(program_area, tokens)
             
         except TokenizationError as e:
-            raise ProgramAreaError(f"Linha [{line}]: Erro na área de programa: {e}")
+            raise ProgramAreaError(f"Linha {line_count} \"[{line}]\": Erro na área de programa: {e}")
             
     return tokens
 
